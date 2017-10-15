@@ -1,5 +1,6 @@
 import os
 import subprocess
+import markdown
 
 '''
 generate a dict of topic:cards
@@ -70,12 +71,12 @@ for filename in os.listdir(path):
 
 	
 	topics.update(set(a.topics))
-	question_title ="#" + a.title + " {#" + str(questionno) + "}\n"
-	answer_title ="#" + a.title + " {#" + str(answerno) + "}\n"
+	question_title ="#" + a.title + " {#q" + str(questionno) + "}\n"
+	answer_title ="#" + a.title + " {#a" + str(answerno) + "}\n"
 	question_content=a.question_content+"\n\n"
 	answer_content=a.answer_content+"\n\n"
-	question_link = "[back to question](#"+ str(questionno) +")\n\n"
-	answer_link = "[see answer](#"+ str(answerno) +")\n\n"
+	question_link = "[back to question](#q"+ str(questionno) +")\n\n"
+	answer_link = "[see answer](#a"+ str(answerno) +")\n\n"
 
 	questions = (questions + question_title + question_content + 
 		answer_link)
@@ -85,20 +86,16 @@ for filename in os.listdir(path):
 header = "% My Flashcards\n% Alastair Heggie\n\n"
 book = header + questions + answers
 bookname = "flashcards"
-bf =  open(bookname+".md","w")
+
+bf = open(bookname+".md","w")
 bf.writelines(book)
 bf.close()
 
 
-args = ['pandoc', bookname+".md", '-o', bookname+".epub", '--webtex']
+args = ['pandoc','-f', 'markdown+header_attributes', bookname+".md", '-o', bookname+".epub", '--webtex']
 subprocess.Popen(args)
 
-
 ##method that assembles question card from title, content, link and anchor
-
-
-
-
 
 
 #method to return a topic:files dict
