@@ -17,13 +17,10 @@ for each topic:
 
 join the answer file to the answer file
 
-convert to epuv
+convert to epub
 
 
 '''
-
-#Card object
-##method to read card and extract topics, question content and answer content
 
 class card(object):
 	def __init__(self,file=None):
@@ -38,7 +35,7 @@ class card(object):
 		topics_idx = lines.index("%%%topics%%%\n")
 		question_idx = lines.index("%%%question%%%\n")
 		answer_idx = lines.index("%%%answer%%%\n")
-		self.title = lines[0]
+		self.title = str.strip(lines[0])
 		self.topics= [str.strip(x) for x in lines[topics_idx+1:question_idx] 
 		if x != "\n"]
 		self.question_content= str.strip("".join(
@@ -55,11 +52,14 @@ class card(object):
 
 
 
+
+
+
 path = "cards"
 topics = set()
 questions , answers = str(), str()
 seedanchor =  99999
-
+p=True
 
 for filename in os.listdir(path):
 	a=card(file = os.path.join(path,filename))
@@ -70,18 +70,17 @@ for filename in os.listdir(path):
 
 	
 	topics.update(set(a.topics))
-	title ="#" + a.title
+	question_title ="#" + a.title + " {#" + str(questionno) + "}\n"
+	answer_title ="#" + a.title + " {#" + str(answerno) + "}\n"
 	question_content=a.question_content+"\n\n"
 	answer_content=a.answer_content+"\n\n"
-	question_link = "[back to question](#question"+str(questionno)+")\n\n"
-	answer_link = "[see answer](#answer"+str(answerno)+")\n\n"
-	question_anchor = "#####question" + str(questionno) + "\n\n"
-	answer_anchor = "#####answer" + str(answerno) + "\n\n"
+	question_link = "[back to question](#"+ str(questionno) +")\n\n"
+	answer_link = "[see answer](#"+ str(answerno) +")\n\n"
 
-	questions = (questions + title + question_content + 
-		answer_link + question_anchor)
-	answers = (answers + title + answer_content +
-		question_link + answer_anchor)
+	questions = (questions + question_title + question_content + 
+		answer_link)
+	answers = (answers + answer_title + answer_content +
+		question_link)
 
 header = "% My Flashcards\n% Alastair Heggie\n\n"
 book = header + questions + answers
@@ -91,7 +90,7 @@ bf.writelines(book)
 bf.close()
 
 
-args = ['pandoc', bookname+".md", '-o', bookname+".epub"]
+args = ['pandoc', bookname+".md", '-o', bookname+".epub", '--webtex']
 subprocess.Popen(args)
 
 
