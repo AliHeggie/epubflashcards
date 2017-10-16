@@ -1,6 +1,5 @@
 import os
 import subprocess
-import markdown
 
 '''
 generate a dict of topic:cards
@@ -56,7 +55,7 @@ class card(object):
 
 
 
-path = "cards"
+path = "C:/Users/s0822514/Dropbox/flashcards/cards"
 topics = set()
 questions , answers = str(), str()
 seedanchor =  99999
